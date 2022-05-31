@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.igorluan.entregasapi.domain.exception.NegocioException;
 import com.igorluan.entregasapi.domain.model.Cliente;
+import com.igorluan.entregasapi.domain.model.Entrega;
 import com.igorluan.entregasapi.domain.repository.ClienteRepository;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,11 @@ public class CadastroClienteService {
 	
 	
 	private ClienteRepository clienteRepository;
+	
+	public Cliente buscar (Long clienteId) {
+			return clienteRepository.findById(clienteId)
+					.orElseThrow(()-> new NegocioException("Cliente nao encontrado."));
+	}
 	
 	@Transactional
 	public Cliente salvar (Cliente cliente) {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.igorluan.entregasapi.domain.model.Cliente;
 import com.igorluan.entregasapi.domain.repository.ClienteRepository;
+import com.igorluan.entregasapi.domain.service.CadastroClienteService;
 
 import lombok.AllArgsConstructor;
 
@@ -28,6 +29,7 @@ import lombok.AllArgsConstructor;
 public class ClienteController {
 
 	private ClienteRepository clienteRepository;
+	private CadastroClienteService cadastroClienteService;
 
 	@GetMapping
 	public List<Cliente> listarClientes() {
@@ -44,7 +46,7 @@ public class ClienteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionarClientes (@Valid @RequestBody Cliente cliente) {
-		return clienteRepository.save(cliente);
+		return cadastroClienteService.salvar(cliente);
 	}
 	
 	@PutMapping("/{clienteId}")
@@ -54,7 +56,7 @@ public class ClienteController {
 			return ResponseEntity.notFound().build();
 		}
 		cliente.setId(clienteId);
-		clienteRepository.save(cliente);
+		cadastroClienteService.salvar(cliente);
 		return ResponseEntity.ok(cliente);
 	}
 	
@@ -63,7 +65,7 @@ public class ClienteController {
 		if(!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
-		clienteRepository.deleteById(clienteId);
+		cadastroClienteService.excluir(clienteId);
 		return ResponseEntity.noContent().build(); 
 	}
 	

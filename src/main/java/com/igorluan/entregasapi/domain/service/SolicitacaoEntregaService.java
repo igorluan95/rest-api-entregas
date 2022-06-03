@@ -1,16 +1,14 @@
 package com.igorluan.entregasapi.domain.service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.igorluan.entregasapi.domain.exception.NegocioException;
 import com.igorluan.entregasapi.domain.model.Cliente;
 import com.igorluan.entregasapi.domain.model.Entrega;
 import com.igorluan.entregasapi.domain.model.StatusEntrega;
-import com.igorluan.entregasapi.domain.repository.ClienteRepository;
 import com.igorluan.entregasapi.domain.repository.EntregaRepository;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +27,7 @@ private CadastroClienteService cadastroClienteService;
 		
 		entrega.setCliente(cliente);
 		entrega.setStatus(StatusEntrega.PENDENTE);
-		entrega.setDataPedido(LocalDateTime.now());
+		entrega.setDataPedido(OffsetDateTime.now());
 		
 				
 		return entregaRepository.save(entrega);

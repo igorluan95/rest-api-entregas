@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.igorluan.entregasapi.api.assembler.EntregaAssembler;
 import com.igorluan.entregasapi.api.model.DestinatarioModel;
 import com.igorluan.entregasapi.api.model.EntregaModel;
 import com.igorluan.entregasapi.domain.model.Entrega;
@@ -30,22 +32,28 @@ public class EntregaController {
 
 	private EntregaRepository entregaRepository;
 	private SolicitacaoEntregaService solicitacaoEntregaService;
+	private EntregaAssembler entregaAssembler;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Entrega solicitar(@Valid  @RequestBody Entrega entrega) {
-		return solicitacaoEntregaService.solicitar(entrega);
+	public EntregaModel solicitar(@Valid  @RequestBody Entrega entrega) {
+		Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(entrega);
+		return entregaAssembler.toModel(entregaSolicitada);
 	}
 	
 	@GetMapping
-	public List<Entrega> listar(){
-		return entregaRepository.findAll();
+	public List<EntregaModel> listar(){
+		return entregaAssembler.toCollectionModel(entregaRepository.findAll());
 	}
 	
 	@GetMapping("/{entregaId}")
 	public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId){
 		return entregaRepository.findById(entregaId)
-				.map(entrega -> {
+				.map(entrega -> ResponseEntity.ok(entregaAssembler.toModel(entrega)))
+				.orElse(ResponseEntity.notFound().build());
+					
+					
+					/* o modelMapper substitui tudo isso
 					EntregaModel entregaModel= new EntregaModel();
 					entregaModel.setId(entrega.getId());
 					entregaModel.setNomeCliente(entrega.getCliente().getNome());
@@ -58,13 +66,11 @@ public class EntregaController {
 					entregaModel.setTaxa(entrega.getTaxa());
 					entregaModel.setStatus(entrega.getStatus());
 					entregaModel.setDataPedido(entrega.getDataPedido());
-					entregaModel.setDataFinalizacao(entrega.getDataFinalizacao());
+					entregaModel.setDataFinalizacao(entrega.getDataFinalizacao());*/
 
 					
-					
-					return ResponseEntity.ok(entregaModel);
-				})
-				.orElse(ResponseEntity.notFound().build());
+
+				
 	}
 	
 }

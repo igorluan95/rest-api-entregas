@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import com.igorluan.entregasapi.api.model.EntregaModel;
+import com.igorluan.entregasapi.api.model.input.EntregaInput;
 import com.igorluan.entregasapi.domain.model.Entrega;
 
 import lombok.AllArgsConstructor;
@@ -26,4 +27,11 @@ public class EntregaAssembler {
 				.map(this::toModel)
 				.collect(Collectors.toList());
 	}
+	
+	public Entrega toEntity (EntregaInput entregaInput) {
+		return modelMapper.map(entregaInput, Entrega.class);
+	}
+	
+	
+	
 }

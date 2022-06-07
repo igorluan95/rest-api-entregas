@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.igorluan.entregasapi.api.assembler.EntregaAssembler;
-import com.igorluan.entregasapi.api.model.DestinatarioModel;
 import com.igorluan.entregasapi.api.model.EntregaModel;
+import com.igorluan.entregasapi.api.model.input.EntregaInput;
 import com.igorluan.entregasapi.domain.model.Entrega;
 import com.igorluan.entregasapi.domain.repository.EntregaRepository;
 import com.igorluan.entregasapi.domain.service.SolicitacaoEntregaService;
@@ -36,8 +35,10 @@ public class EntregaController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EntregaModel solicitar(@Valid  @RequestBody Entrega entrega) {
-		Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(entrega);
+	public EntregaModel solicitar(@Valid  @RequestBody EntregaInput entregaInput) {
+		Entrega novaEntrega = entregaAssembler.toEntity(entregaInput);		
+		Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(novaEntrega);
+		
 		return entregaAssembler.toModel(entregaSolicitada);
 	}
 	
